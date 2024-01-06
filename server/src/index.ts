@@ -1,23 +1,38 @@
-import { buildApp, AppOptions } from './app.js';
+import mongoose from "mongoose";
+import { FastifyInstance } from "fastify";
+
+import { buildApp, AppOptions } from "./app/app.js";
+import { MongoBD } from "./shared/index.js";
+import { router } from "./router/index.js";
 
 const options: AppOptions = {
-    logger: true,
+  logger: true,
 };
 
 const start = async () => {
-    const app = await buildApp(options);
+  const app: FastifyInstance = await buildApp(options);
 
-    try {
-        await app.listen({
-            port: 3000,
-            host: 'localhost',
-        });
+  // It was done poorly!
+  router(app);
 
-    } catch (err) {
-        app.log.error(err);
-        process.exit(1);
-    }
+  try {
+    // Server start point
+    await app.listen({
+      port: 3000,
+      host: "localhost",
+    });
+
+    // Connecting to data base (MongoDB)
+    mongoose
+      .connect(MongoBD)
+      .then(() => console.log("Success"))
+      .catch((error) => {
+        throw new Error(error);
+      });
+  } catch (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
 };
 
 start();
-
