@@ -1,11 +1,17 @@
 import { FastifyReply, FastifyRequest } from "fastify";
+import { UserService } from "../services/user-service.js";
 
 export const registration = async (
   request: FastifyRequest,
   reply: FastifyReply,
 ) => {
   try {
-    reply.send("Hello");
+    // @ts-ignore
+    const { email, password } = request.body;
+    const userData = await UserService.registration(email, password);
+
+    reply.header("refresh-token", userData.refreshToken);
+    return reply.send(JSON.stringify(userData));
   } catch (e) {
     console.log(e);
   }
@@ -32,7 +38,7 @@ export const getUsers = async (
   reply: FastifyReply,
 ) => {
   try {
-    reply.send("Hello");
+    reply.send("Many users");
   } catch (e) {
     console.log(e);
   }

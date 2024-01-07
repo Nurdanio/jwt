@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { FastifyInstance } from "fastify";
 
 import { buildApp, AppOptions } from "./app/app.js";
-import { MongoBD } from "./shared/index.js";
+import { MongoBD } from "./shared/lib/index.js";
 import { router } from "./router/index.js";
 
 const options: AppOptions = {
@@ -12,17 +12,14 @@ const options: AppOptions = {
 const start = async () => {
   const app: FastifyInstance = await buildApp(options);
 
-  // It was done poorly!
   router(app);
 
   try {
-    // Server start point
     await app.listen({
       port: 3000,
       host: "localhost",
     });
 
-    // Connecting to data base (MongoDB)
     mongoose
       .connect(MongoBD)
       .then(() => console.log("Success"))
