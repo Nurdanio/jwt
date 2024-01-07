@@ -23,19 +23,17 @@ const registration = async (
   const passwordHash = await hash(password, 3);
   const linkForActivation = v4();
 
-  const user = UserModel.create({
+  const user = await UserModel.create({
     email,
     password: passwordHash,
     activationLink: linkForActivation,
-  }).then(async () => {
-    await sendActivationMail(email, linkForActivation);
   });
+  await sendActivationMail(email, linkForActivation);
 
-  // Временная заглушка
   const userDto = new UserDto({
-    _id: 31,
-    email: "a@mail.ru",
-    isActivated: false,
+    _id: user.id,
+    email: user.email,
+    isActivated: user.isActivated,
   });
 
   const tokens = generateToken({ ...userDto });

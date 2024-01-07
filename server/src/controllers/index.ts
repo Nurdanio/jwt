@@ -10,6 +10,7 @@ export const registration = async (
     const { email, password } = request.body;
     const userData = await UserService.registration(email, password);
 
+    // Второй этап
     reply.header("refresh-token", userData.refreshToken);
     return reply.send(JSON.stringify(userData));
   } catch (e) {

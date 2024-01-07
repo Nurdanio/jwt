@@ -9,7 +9,7 @@ export const generateToken = (payload: object) => {
   return { accessToken, refreshToken };
 };
 
-export const saveToken = (id: number, refreshToken: string) => {
+export const saveToken = (id: unknown, refreshToken: string) => {
   const tokenData = TokenModel.findOne({ user: id });
 
   // if (tokenData) {
